@@ -1,0 +1,33 @@
+name: Run pnpm install
+description: Sets up node env and runs a clean pnpm install
+author: Jose J. Pardines
+
+inputs:
+  node-version:
+    description: "Node version to run scripts"
+    default: "20.x"
+    required: false
+    type: string
+  node-version-file:
+    description: "Accepts a path to a file containing the version of Node.js to be used by a project"
+    default: ""
+    required: false
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        node-version-file: ${{ inputs.node-version }}
+        cache: pnpm
+
+    - name: Install Dependencies
+      run: |
+        rm -rf node_modules
+        pnpm store prune
+        pnpm i --frozen-lockfile
+      shell: bash
