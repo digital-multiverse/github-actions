@@ -30,7 +30,7 @@ runs:
     - uses: actions/checkout@v3
 
     - name: Install Dependencies
-      uses: digital-multiverse/github-actions/pnpm/install@v1.1.0
+      uses: digital-multiverse/github-actions/pnpm/install@main
       with:
         node-version: ${{ inputs.node-version }}
         node-version-file: ${{ inputs.node-version-file }}
