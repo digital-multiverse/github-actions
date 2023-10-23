@@ -1,0 +1,43 @@
+name: Run pnpm install
+description: Sets up node env and runs a clean pnpm install
+author: Jose J. Pardines
+
+inputs:
+  node-version:
+    description: "Node version to run scripts"
+    default: "20.x"
+    required: false
+    type: string
+  node-version-file:
+    description: "Accepts a path to a file containing the version of Node.js to be used by a project"
+    default: ""
+    required: false
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        node-version-file: ${{ inputs.node-version }}
+        cache: yarn
+
+    - name: Get yarn store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(yarn store path --silent)" >> $GITHUB_ENV
+
+    - uses: actions/cache@v3
+      name: Setup yarn cache
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-yarn-store-${{ hashFiles('**/yarn-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-store-
+
+    - name: Install Dependencies
+      run: yarn install --immutable --immutable-cache
+      shell: bash
