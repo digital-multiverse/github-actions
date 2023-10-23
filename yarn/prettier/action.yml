@@ -1,0 +1,44 @@
+name: Run Prettier
+description: Sets up node env and runs prettier
+author: Jose J. Pardines
+
+inputs:
+  node-version:
+    description: "Node version to run scripts"
+    default: "20.x"
+    required: false
+    type: string
+  node-version-file:
+    description: "Accepts a path to a file containing the version of Node.js to be used by a project"
+    default: ""
+    required: false
+    type: string
+  check:
+    description: "Check prettier errors"
+    default: true
+    required: false
+    type: boolean
+  write:
+    description: "Fix prettier errors"
+    default: false
+    required: false
+    type: boolean
+
+runs:
+  using: composite
+  steps:
+    - name: Install Dependencies
+      uses: digital-multiverse/github-actions/yarn/install@main
+      with:
+        node-version: ${{ inputs.node-version }}
+        node-version-file: ${{ inputs.node-version-file }}
+
+    - name: Check prettier
+      if: inputs.check
+      run: yarn prettier:check
+      shell: bash
+
+    - name: Run prettier
+      if: inputs.write
+      run: yarn prettier:write
+      shell: bash
