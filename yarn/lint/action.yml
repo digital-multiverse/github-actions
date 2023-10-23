@@ -1,0 +1,44 @@
+name: Run Lint
+description: Sets up node env and runs lint
+author: Jose J. Pardines
+
+inputs:
+  node-version:
+    description: "Node version to run scripts"
+    default: "20.x"
+    required: false
+    type: string
+  node-version-file:
+    description: "Accepts a path to a file containing the version of Node.js to be used by a project"
+    default: ""
+    required: false
+    type: string
+  check:
+    description: "Check lint errors"
+    default: true
+    required: false
+    type: boolean
+  write:
+    description: "Fix lint errors"
+    default: false
+    required: false
+    type: boolean
+
+runs:
+  using: composite
+  steps:
+    - name: Install Dependencies
+      uses: digital-multiverse/github-actions/yarn/install@main
+      with:
+        node-version: ${{ inputs.node-version }}
+        node-version-file: ${{ inputs.node-version-file }}
+
+    - name: Check lint
+      if: inputs.check
+      run: yarn lint:check
+      shell: bash
+
+    - name: Run lint
+      if: inputs.write
+      run: yarn lint:write
+      shell: bash
