@@ -25,6 +25,10 @@ runs:
         node-version-file: ${{ inputs.node-version }}
         cache: yarn
 
+    - name: Set yarn
+      run: yarn set version from sources
+      shell: bash
+
     - name: Install Dependencies
       run: yarn install --immutable --immutable-cache
       shell: bash
