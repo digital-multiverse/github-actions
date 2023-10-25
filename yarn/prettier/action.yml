@@ -27,18 +27,12 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install Dependencies
-      uses: digital-multiverse/github-actions/yarn/install@main
-      with:
-        node-version: ${{ inputs.node-version }}
-        node-version-file: ${{ inputs.node-version-file }}
-
     - name: Check prettier
-      if: inputs.check
+      if: ${{ inputs.check == 'true' }}
       run: yarn prettier:check
       shell: bash
 
     - name: Run prettier
-      if: inputs.write
+      if: ${{ inputs.write == 'true' }}
       run: yarn prettier:write
       shell: bash

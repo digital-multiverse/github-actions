@@ -27,18 +27,12 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install Dependencies
-      uses: digital-multiverse/github-actions/yarn/install@main
-      with:
-        node-version: ${{ inputs.node-version }}
-        node-version-file: ${{ inputs.node-version-file }}
-
     - name: Check lint
-      if: inputs.check
+      if: ${{ inputs.check == 'true' }}
       run: yarn lint:check
       shell: bash
 
     - name: Run lint
-      if: inputs.write
+      if: ${{ inputs.write == 'true' }}
       run: yarn lint:write
       shell: bash
