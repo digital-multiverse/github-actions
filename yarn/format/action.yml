@@ -1,0 +1,24 @@
+name: format
+description: Install dependencies and run Biome format
+author: Digital Multiverse
+
+inputs:
+  node-version:
+    description: "Node.js version"
+    default: "24"
+    required: false
+  fix:
+    description: "Write changes (format:write) instead of only checking (format:check)"
+    default: "false"
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Install
+      uses: digital-multiverse/github-actions/yarn/install@v2
+      with:
+        node-version: ${{ inputs.node-version }}
+    - name: Format
+      run: yarn run ${{ inputs.fix == 'true' && 'format:write' || 'format:check' }}
+      shell: bash

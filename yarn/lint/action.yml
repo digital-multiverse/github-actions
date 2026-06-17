@@ -1,38 +1,24 @@
-name: Run Lint
-description: Sets up node env and runs lint
-author: Jose J. Pardines
+name: lint
+description: Install dependencies and run Biome lint (Yarn Berry)
+author: Digital Multiverse
 
 inputs:
   node-version:
-    description: "Node version to run scripts"
-    default: "20.x"
+    description: "Node.js version"
+    default: "24"
     required: false
-    type: string
-  node-version-file:
-    description: "Accepts a path to a file containing the version of Node.js to be used by a project"
-    default: ""
+  fix:
+    description: "Apply fixes (lint:write) instead of only checking (lint:check)"
+    default: "false"
     required: false
-    type: string
-  check:
-    description: "Check lint errors"
-    default: true
-    required: false
-    type: boolean
-  write:
-    description: "Fix lint errors"
-    default: false
-    required: false
-    type: boolean
 
 runs:
   using: composite
   steps:
-    - name: Check lint
-      if: ${{ inputs.check == 'true' }}
-      run: yarn lint:check
-      shell: bash
-
-    - name: Run lint
-      if: ${{ inputs.write == 'true' }}
-      run: yarn lint:write
+    - name: Install
+      uses: digital-multiverse/github-actions/yarn/install@v2
+      with:
+        node-version: ${{ inputs.node-version }}
+    - name: Lint
+      run: yarn run ${{ inputs.fix == 'true' && 'lint:write' || 'lint:check' }}
       shell: bash

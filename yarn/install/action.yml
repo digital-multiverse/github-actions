@@ -1,34 +1,31 @@
-name: Run pnpm install
-description: Sets up node env and runs a clean pnpm install
-author: Jose J. Pardines
+name: yarn install
+description: Checkout, enable Corepack (Yarn Berry), set up Node with caching and run an immutable install
+author: Digital Multiverse
 
 inputs:
   node-version:
-    description: "Node version to run scripts"
-    default: "20.x"
+    description: "Node.js version (used only if node-version-file is empty)"
+    default: "24"
     required: false
-    type: string
   node-version-file:
-    description: "Accepts a path to a file containing the version of Node.js to be used by a project"
+    description: "Path to a file with the Node.js version (e.g. .nvmrc). Overrides node-version."
     default: ""
     required: false
-    type: string
 
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v4
-
-    - uses: actions/setup-node@v4
+    - name: Checkout
+      uses: actions/checkout@v6
+    - name: Enable Corepack (Yarn Berry)
+      run: corepack enable
+      shell: bash
+    - name: Set up Node
+      uses: actions/setup-node@v5
       with:
         node-version: ${{ inputs.node-version }}
-        node-version-file: ${{ inputs.node-version }}
-        cache: 'yarn'
-
-    - name: Set yarn
-      run: yarn set version from sources
-      shell: bash
-
-    - name: Install Dependencies
+        node-version-file: ${{ inputs.node-version-file }}
+        cache: yarn
+    - name: Install dependencies
       run: yarn install --immutable
       shell: bash
